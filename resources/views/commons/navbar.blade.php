@@ -12,7 +12,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 @if (Auth::check())
-                    <li><a href="#">Users</a></li>
+                    <li>{!! link_to_route('users.index', 'Users') !!}</li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="faule">{{ Auth::user()->name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">

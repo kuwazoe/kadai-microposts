@@ -20,3 +20,7 @@ Route::post('signup', 'Auth\AuthController@postRegister')->name('signup.post');
 Route::get('login', 'Auth\AuthController@getLogin')->name('login.get');
 Route::post('login', 'Auth\AuthController@postLogin')->name('login.post');
 Route::get('logout', 'Auth\AuthController@getlogout')->name('logout.get');
+
+Route::group(['middleware' => 'Auth'], function() {
+    Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
+});
