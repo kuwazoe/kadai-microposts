@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Micropost;
+
 class MicropostsController extends Controller
 {
     /**
@@ -90,7 +92,7 @@ class MicropostsController extends Controller
      */
     public function destroy($id)
     {
-        $micropost = App\Micropost::find($id);
+        $micropost = Micropost::find($id);
         
         if (\Auth::user()->id === $micropost->user_id) {
             $micropost->delete();
