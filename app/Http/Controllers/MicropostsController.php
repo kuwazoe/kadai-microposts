@@ -18,7 +18,11 @@ class MicropostsController extends Controller
      */
     public function index()
     {
-        //
+        $microposts = \Auth::user()->myfavorites()->orderBy('created_at', 'desc')->paginate(10);
+        
+        return view('microposts.index', [
+            'microposts' => $microposts,
+        ]);
     }
 
     /**
@@ -99,5 +103,35 @@ class MicropostsController extends Controller
         }
         
         return redirect()->back();
+    }
+
+    public function post_followings($id)
+    {
+        $micropost = Micropost::find($id);
+        $post_followings = $micropost->followings()->paginate(10);
+        
+        $data = [
+            'micropost' => $micropost,
+            'microposts' => $post_followings,
+        ];
+        
+        $data += $this->counts($micropost);
+        
+        return view('microposts.followings', $data);
+    }
+    
+    public function post_followers($id)
+    {
+        $user = User::find($id);
+        $post_followers = $user->followers()->paginate(10);
+        
+        $data = [
+            'user' => $user,
+            'users' => $followers,
+        ];
+        
+        $data += $this->counts($user);
+        
+        return view('micropost.followers', $data);
     }
 }

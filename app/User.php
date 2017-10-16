@@ -41,6 +41,11 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany(Micropost::class);
     }
+
+    public function myfavorites()
+    {
+        return $this->belongsToMany(Micropost::class, 'micropost_favorite', 'favorite_id', 'micropost_id')->withTimestamps();
+    }
     
     public function followings()
     {
@@ -91,4 +96,43 @@ class User extends Model implements AuthenticatableContract,
             $follow_user_ids[] = $this->id;
             return micropost::whereIn('user_id', $follow_user_ids);
         }
+    public function post_followings()
+    {
+        return $this->belongsToMany(Micropost::class, 'micropost_favorite', 'favorite_id', 'micropost_id')->withTimestamps();
+        //return $this->belongsTo(Micropost::class);
+    }
+    
+    public function favorite($userId)
+    {
+        // 既にフォローしているかの確認
+        $exist = $this->is_favorite($userId);
+
+        if ($exist) {
+            // 既にフォローしていれば何もしない
+            return false;
+        } else {
+            // 未フォローであればフォローする
+            $this->post_followings()->attach($userId);
+            return true;
+        }
+    }
+    
+    public function unfavorite($userId)
+    {
+        // 既にフォローしているかの確認
+        $exist = $this->is_favorite($userId);
+        
+        if ($exist) {
+            // 既にフォローしていればフォローを外す
+            $this->post_followings()->detach($userId);
+            return true;
+        } else {
+            // 未フォローであれば何もしない
+            return false;
+        }
+    }
+    
+    public function is_favorite($micropostId) {
+        return $this->post_followings()->where('micropost_id', $micropostId)->exists();
+    }
 }
